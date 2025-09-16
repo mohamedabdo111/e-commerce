@@ -1,8 +1,8 @@
 // import "./App.css";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import MainLayout from "./components/layout/MainLayout";
-import Categories from "./App/Categories/Categories";
-import Products from "./App/products/Products";
+import Products from "./App/Products/products";
+import Categories from "./App/Categories/categories";
 
 function App() {
   const router = createBrowserRouter([
