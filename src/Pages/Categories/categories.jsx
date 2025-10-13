@@ -3,6 +3,8 @@ import DataTable from "../../components/ui/DataTable";
 import { Button, Form, Input } from "antd";
 import ModalComponent from "../../components/ui/Modal";
 import { Plus } from "lucide-react";
+import { getAllCategories } from "../../api/categories";
+import { useQuery } from "@tanstack/react-query";
 
 const columns = [
   {
@@ -42,6 +44,14 @@ const Categories = () => {
     console.log(values);
   };
 
+  const { data: categories, isLoading, isError } = useQuery({
+    queryKey: ["categories"],
+    queryFn: () => getAllCategories(),
+  });
+
+  console.log(categories);
+  console.log(isLoading);
+  console.log(isError);
   return (
     <div>
       <header className="flex justify-between mb-3 items-center">
