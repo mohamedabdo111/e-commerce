@@ -1,9 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import DataTable from "../../components/ui/DataTable";
-import { Button, Form, Input } from "antd";
-import ModalComponent from "../../components/ui/Modal";
-import { Plus } from "lucide-react";
-import { Select } from "antd";
+import { getAllProducts } from "../../api/products";
+import { useQuery } from "@tanstack/react-query";
+import AddProduct from "./addProduct";
+import DeleteProduct from "./deleteProduct";
 
 const columns = [
   {
@@ -13,19 +13,40 @@ const columns = [
     // render: text => <a>{text}</a>,
   },
   {
-    title: "Age",
-    dataIndex: "age",
-    key: "age",
+    title: "Description",
+    dataIndex: "description",
+    key: "description",
   },
   {
-    title: "Address",
-    dataIndex: "address",
-    key: "address",
+    title: "Price",
+    dataIndex: "price",
+    key: "price",
+  },
+  {
+    title: "Stock",
+    dataIndex: "stock",
+    key: "stock",
+  },
+  {
+    title: "category",
+    dataIndex: "category",
+    key: "category",
+    render: (text, record) => <div>{record.category.name}</div>,
+  },
+
+  {
+    title: "Sub Category",
+    dataIndex: "subCategory",
+    key: "subCategory",
+    render: (text, record) => <div>{record.subCategory.name}</div>,
   },
 
   {
     title: "Action",
     key: "action",
+    render:(_ , record)=> <div>
+          <DeleteProduct record={record} />
+    </div>
   },
 ];
 
@@ -38,77 +59,44 @@ const data = [
 ];
 
 const Products = () => {
-  const handleAddCategory = (values) => {
-    console.log(values);
-  };
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
 
-  const handleChange = (value) => {
-    console.log(value);
-  };
+  
+  
+
+  const {
+    data: products,
+    isLoading: isGetProductsLoading,
+    isError: isGetProductsError,
+  } = useQuery({
+    queryKey: ["products", page, pageSize],
+    queryFn: () => getAllProducts(page, pageSize),
+  });
+
+  const displayedData = products?.data || [];
+  const totalCount = products?.pagination?.total || 0;
 
   return (
     <div>
       <header className="flex justify-between mb-3 items-center">
         <h1 className="text-2xl font-semibold ">Products</h1>
-        <ModalComponent title="Add Product" buttonText="Add Product">
-          <Form onFinish={handleAddCategory} layout="vertical">
-            <Form.Item
-              label="Name"
-              name="name"
-              rules={[{ required: true, message: "Please input your name" }]}
-            >
-              <Input />
-            </Form.Item>
-            <Form.Item
-              label="Description"
-              name="description"
-              rules={[{ required: true, message: "Please input your name" }]}
-            >
-              <Input />
-            </Form.Item>
-            <Form.Item
-              label="Price"
-              name="price"
-              rules={[{ required: true, message: "Please input your price" }]}
-            >
-              <Input />
-            </Form.Item>
-            <Form.Item
-              label="Stock"
-              name="stock"
-              rules={[{ required: true, message: "Please input your stock" }]}
-            >
-              <Input />
-            </Form.Item>
-
-            <Form.Item
-              label="Select category"
-              name="selectdCategory"
-              rules={[
-                { required: true, message: "Please input your category" },
-              ]}
-            >
-              <Select
-                onChange={handleChange}
-                defaultValue="Categories"
-                options={[
-                  { value: "jack", label: "Jack" },
-                  { value: "lucy", label: "Lucy" },
-                  { value: "Yiminghe", label: "yiminghe" },
-                  { value: "disabled", label: "Disabled", disabled: true },
-                ]}
-              />
-            </Form.Item>
-
-            <Form.Item>
-              <Button type="primary" htmlType="submit">
-                Add Product
-              </Button>
-            </Form.Item>
-          </Form>
-        </ModalComponent>
-      </header>
-      <DataTable columns={columns} data={data} />
+        <AddProduct />
+      </header> 
+      <DataTable
+        loading={isGetProductsLoading}
+        columns={columns}
+        data={displayedData}
+        pagination={{
+          pageSize: pageSize,
+          current: page,
+          total: totalCount,
+          onChange: (page, pageSize) => {
+            setPage(page);
+            setPageSize(pageSize);
+          },
+        }}
+      />
     </div>
   );
 };

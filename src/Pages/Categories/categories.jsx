@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import DataTable from "../../components/ui/DataTable";
-import { Button, Form, Input } from "antd";
-import ModalComponent from "../../components/ui/Modal";
-import { Plus } from "lucide-react";
+
 import { getAllCategories } from "../../api/categories";
 import { useQuery } from "@tanstack/react-query";
+import AddCategory from "./addCategory";
+import DeleteCategory from "./deleteCategory";
 
 const columns = [
   {
@@ -13,108 +13,60 @@ const columns = [
     key: "name",
     // render: text => <a>{text}</a>,
   },
+
   {
-    title: "Age",
-    dataIndex: "age",
-    key: "age",
-  },
-  {
-    title: "Address",
-    dataIndex: "address",
-    key: "address",
+    title: "description",
+    dataIndex: "description",
+    key: "description",
   },
 
   {
     title: "Action",
     key: "action",
+    render: (text, record) => <div>
+        <DeleteCategory record={record} />
+    </div>,
   },
 ];
 
-const data = [
-  {
-    name: "John Doe",
-    age: 30,
-    address: "123 Main St",
-  },
-];
 const Categories = () => {
-  const [subCategories, setSubCategories] = useState(1);
-  const [subCategoriesWithData, setSubCategoriesWithData] = useState([]);
-  const handleAddCategory = (values) => {
-    console.log(values);
-  };
+  // const [subCategories, setSubCategories] = useState(1);
+  // const [subCategoriesWithData, setSubCategoriesWithData] = useState([]);
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
 
-  const { data: categories, isLoading, isError } = useQuery({
-    queryKey: ["categories"],
-    queryFn: () => getAllCategories(),
+  const {
+    data: categories,
+    isLoading: isGetCategoriesLoading,
+    isError: isGetCategoriesError,
+  } = useQuery({
+    queryKey: ["categories", page, pageSize],
+    queryFn: () => getAllCategories(page, pageSize),
   });
 
-  console.log(categories);
-  console.log(isLoading);
-  console.log(isError);
+  const disPlayedData = categories?.data || [];
+  const totalCount = categories?.pagination?.total || 0;
+
   return (
     <div>
       <header className="flex justify-between mb-3 items-center">
         <h1 className="text-2xl font-semibold ">Categories</h1>
-        <ModalComponent title="Add Category" buttonText="Add Category">
-          <Form onFinish={handleAddCategory} layout="vertical">
-            <Form.Item
-              label="Name"
-              name="name"
-              rules={[{ required: true, message: "Please input your name" }]}
-            >
-              <Input />
-            </Form.Item>
-            <Form.Item
-              label="Description"
-              name="description"
-              rules={[
-                { required: true, message: "Please input your description" },
-              ]}
-            >
-              <Input />
-            </Form.Item>
-            {/* add sub category */}
-
-            {Array.from({ length: subCategories }).map((_, index) => (
-              <Form.Item
-                key={index}
-                label="Sub Category"
-                name={`subCategory${index}`}
-                rules={[
-                  {
-                    required: true,
-                    message: "Please input your sub category",
-                  },
-                ]}
-              >
-                <Input
-                  value={setSubCategoriesWithData[index] || ""}
-                  onChange={(e) => {
-                    const updated = [...subCategoriesWithData];
-                    updated[index] = e.target.value;
-                    setSubCategoriesWithData(updated);
-                  }}
-                />
-              </Form.Item>
-            ))}
-            <div
-              className="flex items-center gap-2 cursor-pointer mb-3"
-              onClick={() => setSubCategories(subCategories + 1)}
-            >
-              <Plus size={18} className="text-gray-600" />
-              <span className="text-gray-600">Add Sub Category</span>
-            </div>
-
-            <Form.Item>
-              <Button type="primary" htmlType="submit">
-                Add Category
-              </Button>
-            </Form.Item>
-          </Form>
-        </ModalComponent>
+        <AddCategory />
       </header>
-      <DataTable columns={columns} data={data} />
+      <DataTable
+        loading={isGetCategoriesLoading}
+        columns={columns}
+        data={disPlayedData}
+        pagination={{
+          pageSize: pageSize,
+          current: page,
+          total: totalCount,
+          onChange: (page, pageSize) => {
+            setPage(page);
+            setPageSize(pageSize);
+          },
+        }}
+      />
     </div>
   );
 };

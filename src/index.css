@@ -7,3 +7,119 @@
 body {
   margin: 0;
 }
+
+/* Ant Design Input Customization */
+.ant-input,
+.ant-input-affix-wrapper,
+.ant-input-number,
+.ant-input-password,
+.ant-select-selector,
+.ant-picker,
+.ant-mentions,
+.ant-cascader-picker,
+.ant-auto-complete,
+.ant-transfer-list-search,
+.ant-transfer-list-header-search {
+  height: 48px !important;
+  border-radius: 12px !important;
+}
+
+/* For input groups and affix wrappers */
+.ant-input-affix-wrapper .ant-input {
+  height: auto !important;
+}
+
+/* For select dropdowns */
+.ant-select-dropdown {
+  border-radius: 12px !important;
+}
+
+/* For date picker dropdowns */
+.ant-picker-dropdown {
+  border-radius: 12px !important;
+}
+
+/* For textarea components */
+.ant-input {
+  min-height: 48px !important;
+}
+
+/* For search inputs */
+.ant-input-search .ant-input {
+  height: 48px !important;
+  border-radius: 12px !important;
+}
+
+/* For input with clear button */
+.ant-input-clear-icon {
+  right: 12px;
+}
+
+/* For select with clear button */
+.ant-select-clear {
+  right: 12px;
+}
+
+/* Ant Design Button Customization */
+.ant-btn,
+.ant-btn-primary,
+.ant-btn-default,
+.ant-btn-dashed,
+.ant-btn-text,
+.ant-btn-link,
+.ant-btn-danger,
+.ant-btn-ghost {
+  height: 48px !important;
+  border-radius: 12px !important;
+  padding: 0 24px !important;
+  font-size: 16px !important;
+  font-weight: 500 !important;
+}
+
+/* For small buttons */
+.ant-btn-sm {
+  height: 32px !important;
+  border-radius: 8px !important;
+  padding: 0 16px !important;
+  font-size: 14px !important;
+}
+
+/* For large buttons */
+.ant-btn-lg {
+  height: 56px !important;
+  border-radius: 16px !important;
+  padding: 0 32px !important;
+  font-size: 18px !important;
+}
+
+/* For icon buttons */
+.ant-btn-icon-only {
+  width: 48px !important;
+  height: 48px !important;
+  border-radius: 12px !important;
+  padding: 0 !important;
+}
+
+.ant-btn-icon-only.ant-btn-sm {
+  width: 32px !important;
+  height: 32px !important;
+  border-radius: 8px !important;
+}
+
+.ant-btn-icon-only.ant-btn-lg {
+  width: 56px !important;
+  height: 56px !important;
+  border-radius: 16px !important;
+}
+
+/* For button groups */
+.ant-btn-group .ant-btn {
+  height: 48px !important;
+  border-radius: 12px !important;
+}
+
+/* For dropdown buttons */
+.ant-dropdown-trigger {
+  height: 48px !important;
+  border-radius: 12px !important;
+}
