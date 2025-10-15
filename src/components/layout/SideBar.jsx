@@ -4,6 +4,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { ChartBarStacked } from "lucide-react";
 import { PackageSearch } from "lucide-react";
 import { ShoppingCart } from "lucide-react";
+import { Layers } from "lucide-react";
 
 const { Sider } = Layout;
 const SideBar = () => {
@@ -16,8 +17,9 @@ const SideBar = () => {
   useEffect(() => {
     const pathToKeyMap = {
       "/categories": "1",
-      "/products": "2",
-      "/orders": "3",
+      "/subcategories": "2",
+      "/products": "3",
+      "/orders": "4",
     };
 
     const currentKey = pathToKeyMap[location.pathname];
@@ -33,10 +35,13 @@ const SideBar = () => {
         navigate("/categories");
         break;
       case "2":
-        navigate("/products");
+        navigate("/subcategories");
         break;
       case "3":
         navigate("/products");
+        break;
+      case "4":
+        navigate("/orders");
         break;
     }
   };
@@ -61,14 +66,19 @@ const SideBar = () => {
           },
           {
             key: "2",
-            icon: <PackageSearch />,
-            label: "Products",
+            icon: <Layers />,
+            label: "Sub Categories",
           },
           {
             key: "3",
-            icon: <ShoppingCart />,
-            label: "Orders",
+            icon: <PackageSearch />,
+            label: "Products",
           },
+          // {
+          //   key: "4",
+          //   icon: <ShoppingCart />,
+          //   label: "Orders",
+          // },
         ]}
       />
     </Sider>

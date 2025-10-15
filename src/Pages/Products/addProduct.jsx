@@ -1,85 +1,128 @@
 import { Form } from "antd";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import ModalComponent from "../../components/ui/Modal";
 import { Input } from "antd";
 import { Button } from "antd";
 import { Select } from "antd";
+import { Edit } from "lucide-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getAllCategories } from "../../api/categories";
 import { getAllSubCategories } from "../../api/subCategory";
-import { addProduct } from "../../api/products";
+import { addProduct, updateProduct } from "../../api/products";
 import toast from "react-hot-toast";
 
-const AddProduct = () => {
+const AddProduct = ({ record = null, isUpdate = false }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [form] = Form.useForm();
 
+  // Set form values when updating
+  useEffect(() => {
+    if (isUpdate && record && isModalOpen) {
+      form.setFieldsValue({
+        name: record.name,
+        description: record.description,
+        price: record.price,
+        stock: record.stock,
+        category: record.category?._id || record.category,
+        subCategory: record.subCategory?._id || record.subCategory,
+      });
+      setSelectedCategory(record.category?._id || record.category);
+    }
+  }, [isUpdate, record, isModalOpen, form]);
 
-  
   const handleChange = (value) => {
-      
-      setSelectedCategory(value);
-    };
-    
-    const handleChangeSubCategory = (value) => {
-        form.setFieldValue("selectedSubCategory", value);
-    };
-    
-    const {
-        data: categories,
-        isLoading: isGetCategoriesLoading,
-        // isError: isGetCategoriesError,
-    } = useQuery({
-        queryKey: ["categories"],
-        queryFn: () => getAllCategories(),
-    });
-    
-    
-    const handleAddProduct = async (values) => {
-        try {
-            await addNewProduct(values)
-            toast.success("Product added successfully")
-            form.resetFields()
-            setIsModalOpen(false)
-        } catch (error) {
-            console.log(error)
-            toast.error("Failed to add product")
-        }
-      console.log(values);
-    };
+    setSelectedCategory(value);
+    // Clear subcategory when category changes
+    form.setFieldValue("subCategory", undefined);
+  };
+
+  const handleChangeSubCategory = (value) => {
+    form.setFieldValue("subCategory", value);
+  };
+
+  const {
+    data: categories,
+    isLoading: isGetCategoriesLoading,
+    // isError: isGetCategoriesError,
+  } = useQuery({
+    queryKey: ["categories"],
+    queryFn: () => getAllCategories(),
+  });
   const {
     data: getSpicificSubCategories,
     isLoading: isGetSpicificSubCategoriesLoading,
     // isError: isGetSpicificSubCategoriesError,
   } = useQuery({
     queryKey: ["getSpicificSubCategories", selectedCategory],
-    queryFn: () => getAllSubCategories(),
+    queryFn: () => getAllSubCategories(1, 100),
     enabled: !!selectedCategory,
   });
 
   const queryClient = useQueryClient();
-  const {mutateAsync : addNewProduct , isPending} = useMutation({
-    mutationFn :(value)=> addProduct(value),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["products"] });
-    },
-    onError: (error) => {
-      toast.error("Failed to add product");
-      console.log(error);
-    }
-  })
 
+  const { mutateAsync: addNewProduct, isPending: isAddProductLoading } =
+    useMutation({
+      mutationFn: (value) => addProduct(value),
+      onSuccess: () => {
+        setIsModalOpen(false);
+        toast.success("Product added successfully");
+        form.resetFields();
+        queryClient.invalidateQueries({ queryKey: ["products"] });
+      },
+      onError: (error) => {
+        toast.error("Failed to add product");
+        console.log(error);
+      },
+    });
+
+  const { mutateAsync: updateNewProduct, isPending: isUpdateProductLoading } =
+    useMutation({
+      mutationFn: (value) => updateProduct(record._id, value),
+      onSuccess: () => {
+        setIsModalOpen(false);
+        toast.success("Product updated successfully");
+        form.resetFields();
+        queryClient.invalidateQueries({ queryKey: ["products"] });
+      },
+      onError: (error) => {
+        toast.error("Failed to update product");
+        console.log(error);
+      },
+    });
+
+  const handleSubmit = async (values) => {
+    if (isUpdate) {
+      await updateNewProduct(values);
+    } else {
+      await addNewProduct(values);
+    }
+  };
+
+  const isLoading = isAddProductLoading || isUpdateProductLoading;
+  const title = isUpdate ? "Update Product" : "Add Product";
+  const buttonText = isUpdate ? "Update Product" : "Add Product";
+  const submitButtonText = isUpdate ? "Update Product" : "Add Product";
+
+  // Custom button for update mode
+  const customButton = isUpdate ? (
+    <Edit
+      className="cursor-pointer"
+      size={20}
+      onClick={() => setIsModalOpen(true)}
+    />
+  ) : null;
 
   return (
     <>
       <ModalComponent
-        title="Add Product"
-        buttonText="Add Product"
+        title={title}
+        buttonText={buttonText}
         isModalOpen={isModalOpen}
         setIsModalOpen={setIsModalOpen}
+        customButton={customButton}
       >
-        <Form form={form} onFinish={handleAddProduct} layout="vertical">
+        <Form form={form} onFinish={handleSubmit} layout="vertical">
           <Form.Item
             label="Name"
             name="name"
@@ -98,7 +141,7 @@ const AddProduct = () => {
             label="Price"
             name="price"
             type="number"
-            rules={[{ required: true, message: "Please input your price" , }]}
+            rules={[{ required: true, message: "Please input your price" }]}
           >
             <Input />
           </Form.Item>
@@ -116,9 +159,9 @@ const AddProduct = () => {
             rules={[{ required: true, message: "Please input your category" }]}
           >
             <Select
-            loading={isGetCategoriesLoading}
+              loading={isGetCategoriesLoading}
               onChange={handleChange}
-              defaultValue="Categories"
+              placeholder="Select category"
               options={categories?.data?.map((category) => ({
                 label: category.name,
                 value: category._id,
@@ -136,17 +179,23 @@ const AddProduct = () => {
             <Select
               loading={isGetSpicificSubCategoriesLoading}
               onChange={handleChangeSubCategory}
-              defaultValue="Sub Categories"
-              options={getSpicificSubCategories?.data?.map((category) => ({
-                label: category.name,
-                value: category._id,
-              }))}
+              placeholder="Select sub category"
+              options={getSpicificSubCategories?.data
+                ?.filter(
+                  (subCategory) =>
+                    subCategory.category === selectedCategory ||
+                    subCategory.category?._id === selectedCategory
+                )
+                ?.map((subCategory) => ({
+                  label: subCategory.name,
+                  value: subCategory._id,
+                }))}
             />
           </Form.Item>
 
           <Form.Item>
-            <Button type="primary" htmlType="submit" loading={isPending}>
-              Add Product
+            <Button type="primary" htmlType="submit" loading={isLoading}>
+              {submitButtonText}
             </Button>
           </Form.Item>
         </Form>

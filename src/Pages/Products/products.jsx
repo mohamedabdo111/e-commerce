@@ -4,6 +4,7 @@ import { getAllProducts } from "../../api/products";
 import { useQuery } from "@tanstack/react-query";
 import AddProduct from "./addProduct";
 import DeleteProduct from "./deleteProduct";
+import UpdateProduct from "./updateProduct";
 
 const columns = [
   {
@@ -44,17 +45,12 @@ const columns = [
   {
     title: "Action",
     key: "action",
-    render:(_ , record)=> <div>
-          <DeleteProduct record={record} />
-    </div>
-  },
-];
-
-const data = [
-  {
-    name: "John Doe",
-    age: 30,
-    address: "123 Main St",
+    render: (_, record) => (
+      <div className="flex gap-2 items-center">
+        <UpdateProduct record={record} />
+        <DeleteProduct record={record} />
+      </div>
+    ),
   },
 ];
 
@@ -62,14 +58,7 @@ const Products = () => {
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
 
-  
-  
-
-  const {
-    data: products,
-    isLoading: isGetProductsLoading,
-    isError: isGetProductsError,
-  } = useQuery({
+  const { data: products, isLoading: isGetProductsLoading } = useQuery({
     queryKey: ["products", page, pageSize],
     queryFn: () => getAllProducts(page, pageSize),
   });
@@ -82,7 +71,7 @@ const Products = () => {
       <header className="flex justify-between mb-3 items-center">
         <h1 className="text-2xl font-semibold ">Products</h1>
         <AddProduct />
-      </header> 
+      </header>
       <DataTable
         loading={isGetProductsLoading}
         columns={columns}

@@ -1,7 +1,13 @@
 import React from "react";
 import { Button, Modal } from "antd";
-const ModalComponent = ({ title, children, buttonText , isModalOpen, setIsModalOpen   }) => {
- 
+const ModalComponent = ({
+  title,
+  children,
+  buttonText,
+  isModalOpen,
+  setIsModalOpen,
+  customButton,
+}) => {
   const showModal = () => {
     setIsModalOpen(true);
   };
@@ -13,9 +19,11 @@ const ModalComponent = ({ title, children, buttonText , isModalOpen, setIsModalO
   };
   return (
     <>
-      <Button type="primary" onClick={showModal}>
-        {buttonText}
-      </Button>
+      {customButton || (
+        <Button type="primary" onClick={showModal}>
+          {buttonText}
+        </Button>
+      )}
       <Modal
         title={title}
         closable={{ "aria-label": "Custom Close Button" }}

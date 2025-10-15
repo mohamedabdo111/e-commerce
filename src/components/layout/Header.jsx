@@ -14,7 +14,8 @@ const HeaderLayout = ({ colorBgContainer, setCollapsed, collapsed }) => {
     >
       <Button
         type="default"
-        size="large"
+        size="small"
+        danger
         // icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
 
         onClick={() => setCollapsed(!collapsed)}
