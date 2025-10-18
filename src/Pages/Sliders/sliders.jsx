@@ -70,7 +70,7 @@ const Sliders = () => {
 
   return (
     <div>
-      <header className="flex justify-between mb-3 items-center">
+      <header className="flex justify-between mb-3 items-center flex-wrap gap-2 overflow-x-auto">
         <h1 className="text-2xl font-semibold ">Sliders</h1>
         <AddSlider />
       </header>

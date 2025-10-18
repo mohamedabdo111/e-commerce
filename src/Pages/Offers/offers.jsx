@@ -69,7 +69,7 @@ const Offers = () => {
 
   return (
     <div>
-      <header className="flex justify-between mb-3 items-center">
+      <header className="flex justify-between mb-3 items-center flex-wrap gap-2 overflow-x-auto">
         <h1 className="text-2xl font-semibold ">Offers</h1>
         <AddOffer />
       </header>

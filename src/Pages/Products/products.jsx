@@ -83,7 +83,7 @@ const Products = () => {
 
   return (
     <div>
-      <header className="flex justify-between mb-3 items-center">
+      <header className="flex justify-between mb-3 items-center flex-wrap gap-2 overflow-x-auto">
         <h1 className="text-2xl font-semibold ">Products</h1>
         <AddProduct />
       </header>

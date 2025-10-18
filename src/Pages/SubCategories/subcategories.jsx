@@ -65,7 +65,7 @@ const SubCategories = () => {
 
   return (
     <div>
-      <header className="flex justify-between mb-3 items-center">
+      <header className="flex justify-between mb-3 items-center flex-wrap gap-2 overflow-x-auto">
         <h1 className="text-2xl font-semibold">Sub Categories</h1>
         <AddSubCategory />
       </header>

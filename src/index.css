@@ -123,3 +123,8 @@ body {
   height: 48px !important;
   border-radius: 12px !important;
 }
+
+.ant-spin-container {
+  width: 100% !important;
+  overflow-x: auto !important;
+}
