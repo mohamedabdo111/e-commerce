@@ -12,12 +12,24 @@ export const getAllSubCategories = async (
 };
 
 export const addSubCategory = async (data) => {
-  const response = await BASE_URL.post("/api/subcategories", data);
+  
+
+  const response = await BASE_URL.post("/api/subcategories", data, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
   return response.data;
 };
 
 export const updateSubCategory = async (id, data) => {
-  const response = await BASE_URL.put(`/api/subcategories/${id}`, data);
+  
+
+  const response = await BASE_URL.patch(`/api/subcategories/${id}`, data, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
   return response.data;
 };
 

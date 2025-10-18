@@ -19,6 +19,14 @@ const columns = [
     key: "description",
   },
   {
+    title: "Image",
+    dataIndex: "image",
+    key: "image",
+    render: (text) => (
+      <img src={text} alt="Product Image" width={60} height={40} />
+    ),
+  },
+  {
     title: "Price",
     dataIndex: "price",
     key: "price",

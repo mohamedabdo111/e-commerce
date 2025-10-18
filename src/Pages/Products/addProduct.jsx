@@ -1,6 +1,7 @@
 import { Form } from "antd";
 import React, { useState, useEffect } from "react";
 import ModalComponent from "../../components/ui/Modal";
+import ImageUpload from "../../components/ui/ImageUpload";
 import { Input } from "antd";
 import { Button } from "antd";
 import { Select } from "antd";
@@ -92,10 +93,26 @@ const AddProduct = ({ record = null, isUpdate = false }) => {
     });
 
   const handleSubmit = async (values) => {
-    if (isUpdate) {
-      await updateNewProduct(values);
+    // Get the file from form
+    const imageFile = form.getFieldValue("image");
+
+    // Prepare data with file
+    const submitData = {
+      ...values,
+    };
+
+    // Only include image if it's a new file (not the placeholder)
+    if (imageFile && imageFile !== "existing-image") {
+      submitData.image = imageFile;
     } else {
-      await addNewProduct(values);
+      // remove image from submitData
+      delete submitData.image;
+    }
+
+    if (isUpdate) {
+      await updateNewProduct(submitData);
+    } else {
+      await addNewProduct(submitData);
     }
   };
 
@@ -190,6 +207,20 @@ const AddProduct = ({ record = null, isUpdate = false }) => {
                   label: subCategory.name,
                   value: subCategory._id,
                 }))}
+            />
+          </Form.Item>
+
+          <Form.Item
+            label="Image"
+            name="image"
+            rules={[{ required: true, message: "Please upload an image" }]}
+          >
+            <ImageUpload
+              form={form}
+              fieldName="image"
+              existingImage={record?.image}
+              isUpdate={isUpdate}
+              required={true}
             />
           </Form.Item>
 

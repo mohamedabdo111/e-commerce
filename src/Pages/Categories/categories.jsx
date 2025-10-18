@@ -50,6 +50,14 @@ const columns = [
     key: "description",
   },
   {
+    title: "Image",
+    dataIndex: "image",
+    key: "image",
+    render: (text) => (
+      <img src={text} alt="Category Image" width={60} height={40} />
+    ),
+  },
+  {
     title: "Sub Categories",
     key: "subCategories",
     render: (text, record) => <SubCategoriesCell categoryId={record._id} />,

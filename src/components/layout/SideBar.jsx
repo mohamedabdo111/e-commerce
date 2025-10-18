@@ -5,6 +5,8 @@ import { ChartBarStacked } from "lucide-react";
 import { PackageSearch } from "lucide-react";
 import { ShoppingCart } from "lucide-react";
 import { Layers } from "lucide-react";
+import { Percent } from "lucide-react";
+import { Image } from "lucide-react";
 
 const { Sider } = Layout;
 const SideBar = () => {
@@ -19,7 +21,9 @@ const SideBar = () => {
       "/categories": "1",
       "/subcategories": "2",
       "/products": "3",
-      "/orders": "4",
+      "/offers": "4",
+      "/sliders": "5",
+      "/orders": "6",
     };
 
     const currentKey = pathToKeyMap[location.pathname];
@@ -41,6 +45,12 @@ const SideBar = () => {
         navigate("/products");
         break;
       case "4":
+        navigate("/offers");
+        break;
+      case "5":
+        navigate("/sliders");
+        break;
+      case "6":
         navigate("/orders");
         break;
     }
@@ -74,8 +84,18 @@ const SideBar = () => {
             icon: <PackageSearch />,
             label: "Products",
           },
+          {
+            key: "4",
+            icon: <Percent />,
+            label: "Offers",
+          },
+          {
+            key: "5",
+            icon: <Image />,
+            label: "Sliders",
+          },
           // {
-          //   key: "4",
+          //   key: "6",
           //   icon: <ShoppingCart />,
           //   label: "Orders",
           // },

@@ -24,6 +24,14 @@ const columns = [
     render: (category) => category?.name || "N/A",
   },
   {
+    title: "Image",
+    dataIndex: "image",
+    key: "image",
+    render: (text) => (
+      <img src={text} alt="Sub Category Image" width={60} height={40} />
+    ),
+  },
+  {
     title: "Action",
     key: "action",
     render: (text, record) => (

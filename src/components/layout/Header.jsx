@@ -18,7 +18,10 @@ const HeaderLayout = ({ colorBgContainer, setCollapsed, collapsed }) => {
         danger
         // icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
 
-        onClick={() => setCollapsed(!collapsed)}
+        onClick={() => {
+          localStorage.clear();
+          window.location.href = "/login";
+        }}
         style={{
           fontSize: "16px",
 

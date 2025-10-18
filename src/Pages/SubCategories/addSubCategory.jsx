@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Form, Select } from "antd";
 import ModalComponent from "../../components/ui/Modal";
+import ImageUpload from "../../components/ui/ImageUpload";
 import { Input } from "antd";
 import { Button } from "antd";
 import { Edit } from "lucide-react";
@@ -22,7 +23,6 @@ const AddSubCategory = ({ record = null, isUpdate = false }) => {
         name: record.name,
         description: record.description,
         category: record.category?._id || record.category,
-        image: record.image,
       });
     }
   }, [isUpdate, record, isModalOpen, form]);
@@ -72,10 +72,26 @@ const AddSubCategory = ({ record = null, isUpdate = false }) => {
   });
 
   const handleSubmit = async (values) => {
-    if (isUpdate) {
-      await updateSubCategoryMutation(values);
+    // Get the file from form
+    const imageFile = form.getFieldValue("image");
+
+    // Prepare data with file
+    const submitData = {
+      ...values,
+    };
+
+    // Only include image if it's a new file (not the placeholder)
+    if (imageFile && imageFile !== "existing-image") {
+      submitData.image = imageFile;
     } else {
-      await addSubCategoryMutation(values);
+      // remove image from submitData
+      delete submitData.image;
+    }
+
+    if (isUpdate) {
+      await updateSubCategoryMutation(submitData);
+    } else {
+      await addSubCategoryMutation(submitData);
     }
   };
 
@@ -140,11 +156,17 @@ const AddSubCategory = ({ record = null, isUpdate = false }) => {
             </Select>
           </Form.Item>
           <Form.Item
-            label="Image URL"
+            label="Image"
             name="image"
-            rules={[{ required: true, message: "Please input image URL" }]}
+            rules={[{ required: true, message: "Please upload an image" }]}
           >
-            <Input placeholder="https://example.com/image.jpg" />
+            <ImageUpload
+              form={form}
+              fieldName="image"
+              existingImage={record?.image}
+              isUpdate={isUpdate}
+              required={true}
+            />
           </Form.Item>
           <Form.Item>
             <Button type="primary" htmlType="submit" loading={isLoading}>
