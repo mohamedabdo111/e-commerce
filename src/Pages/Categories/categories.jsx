@@ -8,6 +8,7 @@ import AddCategory from "./addCategory";
 import DeleteCategory from "./deleteCategory";
 import UpdateCategory from "./updateCategory";
 import AddSubCategory from "../SubCategories/addSubCategory";
+import { Image } from "antd";
 
 const SubCategoriesCell = ({ categoryId }) => {
   const { data: subCategories } = useQuery({
@@ -54,7 +55,13 @@ const columns = [
     dataIndex: "image",
     key: "image",
     render: (text) => (
-      <img src={text} alt="Category Image" width={60} height={40} />
+      <Image
+        width={60}
+        height={40}
+        src={text}
+        alt="Category Image"
+        style={{ objectFit: "cover", borderRadius: "4px" }}
+      />
     ),
   },
   {

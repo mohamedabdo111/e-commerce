@@ -5,6 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import AddProduct from "./addProduct";
 import DeleteProduct from "./deleteProduct";
 import UpdateProduct from "./updateProduct";
+import { Image } from "antd";
 
 const columns = [
   {
@@ -23,7 +24,13 @@ const columns = [
     dataIndex: "image",
     key: "image",
     render: (text) => (
-      <img src={text} alt="Product Image" width={60} height={40} />
+      <Image
+        width={60}
+        height={40}
+        src={text}
+        alt="product image"
+        style={{ objectFit: "cover", borderRadius: "4px" }}
+      />
     ),
   },
   {

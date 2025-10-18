@@ -5,6 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import AddSubCategory from "./addSubCategory";
 import DeleteSubCategory from "./deleteSubCategory";
 import UpdateSubCategory from "./updateSubCategory";
+import { Image } from "antd";
 
 const columns = [
   {
@@ -28,7 +29,13 @@ const columns = [
     dataIndex: "image",
     key: "image",
     render: (text) => (
-      <img src={text} alt="Sub Category Image" width={60} height={40} />
+      <Image
+        width={60}
+        height={40}
+        src={text}
+        alt="Sub Category Image"
+        style={{ objectFit: "cover", borderRadius: "4px" }}
+      />
     ),
   },
   {

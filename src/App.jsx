@@ -1,17 +1,20 @@
 // import "./App.css";
+import React from "react";
 import {
   createBrowserRouter,
   RouterProvider,
   Navigate,
 } from "react-router-dom";
-import MainLayout from "./components/layout/MainLayout";
-import Products from "./Pages/Products/products";
-import Categories from "./Pages/Categories/categories";
-import SubCategories from "./Pages/SubCategories/subcategories";
-import Offers from "./Pages/Offers/offers";
-import Sliders from "./Pages/Sliders/sliders";
-import LoginForm from "./auth/login";
 
+const Products = React.lazy(() => import("./Pages/Products/products"));
+const SubCategories = React.lazy(() =>
+  import("./Pages/SubCategories/subcategories")
+);
+const Offers = React.lazy(() => import("./Pages/Offers/offers"));
+const Sliders = React.lazy(() => import("./Pages/Sliders/sliders"));
+const LoginForm = React.lazy(() => import("./auth/login"));
+const Categories = React.lazy(() => import("./Pages/Categories/categories"));
+const MainLayout = React.lazy(() => import("./components/layout/MainLayout"));
 function App() {
   const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
 
