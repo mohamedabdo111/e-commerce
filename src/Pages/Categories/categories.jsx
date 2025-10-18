@@ -97,7 +97,7 @@ const Categories = () => {
 
   return (
     <div>
-      <header className="flex flex-col sm:flex-row gap-2 justify-between mb-3 items-center flex-wrap">
+      <header className="flex justify-between mb-3 items-center flex-wrap gap-2 overflow-x-auto">
         <h1 className="text-2xl font-semibold ">Categories</h1>
         <div className="flex gap-2 items-center">
           <AddCategory />
