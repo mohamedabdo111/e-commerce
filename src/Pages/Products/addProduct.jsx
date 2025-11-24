@@ -20,6 +20,7 @@ const AddProduct = ({ record = null, isUpdate = false }) => {
   // Set form values when updating
   useEffect(() => {
     if (isUpdate && record && isModalOpen) {
+      console.log(record);
       form.setFieldsValue({
         name: record.name,
         description: record.description,
@@ -27,6 +28,8 @@ const AddProduct = ({ record = null, isUpdate = false }) => {
         stock: record.stock,
         category: record.category?._id || record.category,
         subCategory: record.subCategory?._id || record.subCategory,
+        wholesalePrice: record.originalWholesalePrice,
+        retailPrice: record.retailPrice,
       });
       setSelectedCategory(record.category?._id || record.category);
     }
@@ -72,8 +75,8 @@ const AddProduct = ({ record = null, isUpdate = false }) => {
         queryClient.invalidateQueries({ queryKey: ["products"] });
       },
       onError: (error) => {
-        toast.error("Failed to add product");
-        console.log(error);
+        toast.error(error?.response?.data.message);
+        console.error(error?.response?.data.message);
       },
     });
 
@@ -155,10 +158,22 @@ const AddProduct = ({ record = null, isUpdate = false }) => {
             <Input />
           </Form.Item>
           <Form.Item
-            label="Price"
-            name="price"
+            label="wholesalePrice"
+            name="wholesalePrice"
             type="number"
-            rules={[{ required: true, message: "Please input your price" }]}
+            rules={[
+              { required: true, message: "Please input your wholesalePrice" },
+            ]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            label="retailPrice"
+            name="retailPrice"
+            type="number"
+            rules={[
+              { required: true, message: "Please input your retailPrice" },
+            ]}
           >
             <Input />
           </Form.Item>

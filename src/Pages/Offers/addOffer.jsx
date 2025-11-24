@@ -139,7 +139,7 @@ const AddOffer = ({ record = null, isUpdate = false }) => {
           </Form.Item>
 
           <Form.Item
-            label="Discount (%)"
+            label="Discount"
             name="discount"
             rules={[
               { required: true, message: "Please input discount percentage" },
@@ -150,7 +150,6 @@ const AddOffer = ({ record = null, isUpdate = false }) => {
               max={100}
               style={{ width: "100%" }}
               placeholder="Enter discount percentage"
-              addonAfter="%"
             />
           </Form.Item>
 

@@ -22,7 +22,7 @@ const columns = [
     title: "Discount",
     dataIndex: "discount",
     key: "discount",
-    render: (text) => <Tag color="blue">{text}%</Tag>,
+    render: (text) => <Tag color="blue">{text} EGP</Tag>,
   },
   {
     title: "Products Price",
