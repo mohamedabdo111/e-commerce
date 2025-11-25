@@ -35,6 +35,7 @@ const AddOffer = ({ record = null, isUpdate = false }) => {
         startDate: dayjs(record.startDate),
         endDate: dayjs(record.endDate),
         products: record?.products?.map((product) => product._id) || [],
+        priceTypes: record?.priceTypes || [],
       });
     }
   }, [isUpdate, record, isModalOpen, form]);
@@ -74,6 +75,7 @@ const AddOffer = ({ record = null, isUpdate = false }) => {
       ...values,
       startDate: values.startDate.format("YYYY-MM-DDTHH:mm:ss.SSS[Z]"),
       endDate: values.endDate.format("YYYY-MM-DDTHH:mm:ss.SSS[Z]"),
+      priceTypes: values.priceTypes,
     };
 
     if (isUpdate) {
@@ -190,6 +192,26 @@ const AddOffer = ({ record = null, isUpdate = false }) => {
                   {product.name}
                 </Option>
               ))}
+            </Select>
+          </Form.Item>
+
+          <Form.Item
+            label="Price Types"
+            name="priceTypes"
+            rules={[
+              {
+                required: true,
+                message: "Please select at least one price type",
+              },
+            ]}
+          >
+            <Select
+              mode="multiple"
+              placeholder="Select price types for this offer"
+              style={{ width: "100%" }}
+            >
+              <Option value="retailPrice">Retail Price</Option>
+              <Option value="wholesalePrice">Wholesale Price</Option>
             </Select>
           </Form.Item>
 

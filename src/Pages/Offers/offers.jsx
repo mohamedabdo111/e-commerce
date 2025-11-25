@@ -28,7 +28,16 @@ const columns = [
     title: "Products Price",
     dataIndex: "products",
     key: "products",
-    render: (text) => <Tag color="blue">{text[0].price} EGP</Tag>,
+    render: (text ,record ) => <Tag color="blue"> {
+      record?.products?.map((product)=>{
+        return<>
+           <div>
+          {product.retailPrice} EGP
+        </div>
+        </>
+     
+      })
+    }</Tag>,
   },
   {
     title: "Start Date",
