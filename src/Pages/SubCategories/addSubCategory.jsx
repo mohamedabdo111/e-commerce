@@ -8,6 +8,7 @@ import { Edit } from "lucide-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { addSubCategory, updateSubCategory } from "../../api/subCategory";
 import { getAllCategories } from "../../api/categories";
+import { useTranslation } from "react-i18next";
 import toast from "react-hot-toast";
 
 const { Option } = Select;
@@ -15,8 +16,8 @@ const { Option } = Select;
 const AddSubCategory = ({ record = null, isUpdate = false }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [form] = Form.useForm();
+  const { t } = useTranslation();
 
-  // Set form values when updating
   useEffect(() => {
     if (isUpdate && record && isModalOpen) {
       form.setFieldsValue({
@@ -27,10 +28,9 @@ const AddSubCategory = ({ record = null, isUpdate = false }) => {
     }
   }, [isUpdate, record, isModalOpen, form]);
 
-  // Fetch categories for the dropdown
   const { data: categoriesData } = useQuery({
     queryKey: ["categories"],
-    queryFn: () => getAllCategories(1, 100), // Get all categories
+    queryFn: () => getAllCategories(1, 100),
   });
 
   const queryClient = useQueryClient();
@@ -42,14 +42,13 @@ const AddSubCategory = ({ record = null, isUpdate = false }) => {
     mutationFn: (data) => addSubCategory(data),
     onSuccess: () => {
       setIsModalOpen(false);
-      toast.success("Sub Category added successfully");
+      toast.success(t("toasts.subCategoryAdded"));
       form.resetFields();
       queryClient.invalidateQueries({ queryKey: ["subCategories"] });
       queryClient.invalidateQueries({ queryKey: ["categories"] });
     },
-    onError: (error) => {
-      toast.error("Failed to add sub category");
-      console.log(error);
+    onError: () => {
+      toast.error(t("toasts.subCategoryAddFailed"));
     },
   });
 
@@ -60,31 +59,23 @@ const AddSubCategory = ({ record = null, isUpdate = false }) => {
     mutationFn: (data) => updateSubCategory(record._id, data),
     onSuccess: () => {
       setIsModalOpen(false);
-      toast.success("Sub Category updated successfully");
+      toast.success(t("toasts.subCategoryUpdated"));
       form.resetFields();
       queryClient.invalidateQueries({ queryKey: ["subCategories"] });
       queryClient.invalidateQueries({ queryKey: ["categories"] });
     },
-    onError: (error) => {
-      toast.error("Failed to update sub category");
-      console.log(error);
+    onError: () => {
+      toast.error(t("toasts.subCategoryUpdateFailed"));
     },
   });
 
   const handleSubmit = async (values) => {
-    // Get the file from form
     const imageFile = form.getFieldValue("image");
+    const submitData = { ...values };
 
-    // Prepare data with file
-    const submitData = {
-      ...values,
-    };
-
-    // Only include image if it's a new file (not the placeholder)
     if (imageFile && imageFile !== "existing-image") {
       submitData.image = imageFile;
     } else {
-      // remove image from submitData
       delete submitData.image;
     }
 
@@ -96,13 +87,9 @@ const AddSubCategory = ({ record = null, isUpdate = false }) => {
   };
 
   const isLoading = isAddSubCategoryLoading || isUpdateSubCategoryLoading;
-  const title = isUpdate ? "Update Sub Category" : "Add Sub Category";
-  const buttonText = isUpdate ? "Update Sub Category" : "Add Sub Category";
-  const submitButtonText = isUpdate
-    ? "Update Sub Category"
-    : "Add Sub Category";
+  const title = isUpdate ? t("buttons.updateSubCategory") : t("buttons.addSubCategory");
+  const buttonText = isUpdate ? t("buttons.updateSubCategory") : t("buttons.addSubCategory");
 
-  // Custom button for update mode
   const customButton = isUpdate ? (
     <Edit
       className="cursor-pointer"
@@ -112,70 +99,61 @@ const AddSubCategory = ({ record = null, isUpdate = false }) => {
   ) : null;
 
   return (
-    <>
-      <ModalComponent
-        title={title}
-        buttonText={buttonText}
-        isModalOpen={isModalOpen}
-        setIsModalOpen={setIsModalOpen}
-        customButton={customButton}
-      >
-        <Form form={form} onFinish={handleSubmit} layout="vertical">
-          <Form.Item
-            label="Name"
-            name="name"
-            rules={[
-              { required: true, message: "Please input sub category name" },
-            ]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item
-            label="Description"
-            name="description"
-            rules={[
-              {
-                required: true,
-                message: "Please input sub category description",
-              },
-            ]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item
-            label="Category"
-            name="category"
-            rules={[{ required: true, message: "Please select a category" }]}
-          >
-            <Select placeholder="Select a category">
-              {categoriesData?.data?.map((category) => (
-                <Option key={category._id} value={category._id}>
-                  {category.name}
-                </Option>
-              ))}
-            </Select>
-          </Form.Item>
-          <Form.Item
-            label="Image"
-            name="image"
-            rules={[{ required: true, message: "Please upload an image" }]}
-          >
-            <ImageUpload
-              form={form}
-              fieldName="image"
-              existingImage={record?.image}
-              isUpdate={isUpdate}
-              required={true}
-            />
-          </Form.Item>
-          <Form.Item>
-            <Button type="primary" htmlType="submit" loading={isLoading}>
-              {submitButtonText}
-            </Button>
-          </Form.Item>
-        </Form>
-      </ModalComponent>
-    </>
+    <ModalComponent
+      title={title}
+      buttonText={buttonText}
+      isModalOpen={isModalOpen}
+      setIsModalOpen={setIsModalOpen}
+      customButton={customButton}
+    >
+      <Form form={form} onFinish={handleSubmit} layout="vertical">
+        <Form.Item
+          label="Name"
+          name="name"
+          rules={[{ required: true, message: "Please input sub category name" }]}
+        >
+          <Input />
+        </Form.Item>
+        <Form.Item
+          label="Description"
+          name="description"
+          rules={[{ required: true, message: "Please input sub category description" }]}
+        >
+          <Input />
+        </Form.Item>
+        <Form.Item
+          label="Category"
+          name="category"
+          rules={[{ required: true, message: "Please select a category" }]}
+        >
+          <Select placeholder="Select a category">
+            {categoriesData?.data?.map((category) => (
+              <Option key={category._id} value={category._id}>
+                {category.name}
+              </Option>
+            ))}
+          </Select>
+        </Form.Item>
+        <Form.Item
+          label="Image"
+          name="image"
+          rules={[{ required: true, message: "Please upload an image" }]}
+        >
+          <ImageUpload
+            form={form}
+            fieldName="image"
+            existingImage={record?.image}
+            isUpdate={isUpdate}
+            required={true}
+          />
+        </Form.Item>
+        <Form.Item>
+          <Button type="primary" htmlType="submit" loading={isLoading}>
+            {buttonText}
+          </Button>
+        </Form.Item>
+      </Form>
+    </ModalComponent>
   );
 };
 

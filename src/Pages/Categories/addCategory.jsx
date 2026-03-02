@@ -7,14 +7,15 @@ import { Button } from "antd";
 import { Edit } from "lucide-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { addCategory, updateCategory } from "../../api/categories";
+import { useTranslation } from "react-i18next";
 import toast from "react-hot-toast";
 
 const AddCategory = ({ record = null, isUpdate = false }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [form] = Form.useForm();
   const queryClient = useQueryClient();
+  const { t } = useTranslation();
 
-  // Set form values when updating
   useEffect(() => {
     if (isUpdate && record && isModalOpen) {
       form.setFieldsValue({
@@ -29,13 +30,12 @@ const AddCategory = ({ record = null, isUpdate = false }) => {
       mutationFn: (data) => addCategory(data),
       onSuccess: () => {
         setIsModalOpen(false);
-        toast.success("Category added successfully");
+        toast.success(t("toasts.categoryAdded"));
         form.resetFields();
         queryClient.invalidateQueries({ queryKey: ["categories"] });
       },
-      onError: (error) => {
-        toast.error("Failed to add category");
-        console.log(error);
+      onError: () => {
+        toast.error(t("toasts.categoryAddFailed"));
       },
     });
 
@@ -46,30 +46,22 @@ const AddCategory = ({ record = null, isUpdate = false }) => {
     mutationFn: (data) => updateCategory(record._id, data),
     onSuccess: () => {
       setIsModalOpen(false);
-      toast.success("Category updated successfully");
+      toast.success(t("toasts.categoryUpdated"));
       form.resetFields();
       queryClient.invalidateQueries({ queryKey: ["categories"] });
     },
-    onError: (error) => {
-      toast.error("Failed to update category");
-      console.log(error);
+    onError: () => {
+      toast.error(t("toasts.categoryUpdateFailed"));
     },
   });
 
   const handleSubmit = async (values) => {
-    // Get the file from form
     const imageFile = form.getFieldValue("image");
+    const submitData = { ...values };
 
-    // Prepare data with file
-    const submitData = {
-      ...values,
-    };
-
-    // Only include image if it's a new file (not the placeholder)
     if (imageFile && imageFile !== "existing-image") {
       submitData.image = imageFile;
     } else {
-      // remove image from submitData
       delete submitData.image;
     }
 
@@ -81,11 +73,9 @@ const AddCategory = ({ record = null, isUpdate = false }) => {
   };
 
   const isLoading = isAddCategoryLoading || isUpdateCategoryLoading;
-  const title = isUpdate ? "Update Category" : "Add Category";
-  const buttonText = isUpdate ? "Update Category" : "Add Category";
-  const submitButtonText = isUpdate ? "Update Category" : "Add Category";
+  const title = isUpdate ? t("buttons.updateCategory") : t("buttons.addCategory");
+  const buttonText = isUpdate ? t("buttons.updateCategory") : t("buttons.addCategory");
 
-  // Custom button for update mode
   const customButton = isUpdate ? (
     <Edit
       className="cursor-pointer"
@@ -95,52 +85,48 @@ const AddCategory = ({ record = null, isUpdate = false }) => {
   ) : null;
 
   return (
-    <>
-      <ModalComponent
-        title={title}
-        buttonText={buttonText}
-        isModalOpen={isModalOpen}
-        setIsModalOpen={setIsModalOpen}
-        customButton={customButton}
-      >
-        <Form form={form} onFinish={handleSubmit} layout="vertical">
-          <Form.Item
-            label="Name"
-            name="name"
-            rules={[{ required: true, message: "Please input your name" }]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item
-            label="Description"
-            name="description"
-            rules={[
-              { required: true, message: "Please input your description" },
-            ]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item
-            label="Image"
-            name="image"
-            rules={[{ required: true, message: "Please upload an image" }]}
-          >
-            <ImageUpload
-              form={form}
-              fieldName="image"
-              existingImage={record?.image}
-              isUpdate={isUpdate}
-              required={true}
-            />
-          </Form.Item>
-          <Form.Item>
-            <Button type="primary" htmlType="submit" loading={isLoading}>
-              {submitButtonText}
-            </Button>
-          </Form.Item>
-        </Form>
-      </ModalComponent>
-    </>
+    <ModalComponent
+      title={title}
+      buttonText={buttonText}
+      isModalOpen={isModalOpen}
+      setIsModalOpen={setIsModalOpen}
+      customButton={customButton}
+    >
+      <Form form={form} onFinish={handleSubmit} layout="vertical">
+        <Form.Item
+          label="Name"
+          name="name"
+          rules={[{ required: true, message: "Please input your name" }]}
+        >
+          <Input />
+        </Form.Item>
+        <Form.Item
+          label="Description"
+          name="description"
+          rules={[{ required: true, message: "Please input your description" }]}
+        >
+          <Input />
+        </Form.Item>
+        <Form.Item
+          label="Image"
+          name="image"
+          rules={[{ required: true, message: "Please upload an image" }]}
+        >
+          <ImageUpload
+            form={form}
+            fieldName="image"
+            existingImage={record?.image}
+            isUpdate={isUpdate}
+            required={true}
+          />
+        </Form.Item>
+        <Form.Item>
+          <Button type="primary" htmlType="submit" loading={isLoading}>
+            {buttonText}
+          </Button>
+        </Form.Item>
+      </Form>
+    </ModalComponent>
   );
 };
 

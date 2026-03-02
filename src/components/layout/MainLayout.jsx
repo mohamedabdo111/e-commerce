@@ -1,34 +1,29 @@
-import { useState } from "react";
+import { Layout, theme } from "antd";
 import { Outlet } from "react-router-dom";
-
-import { Button, Layout, theme } from "antd";
 import HeaderLayout from "./Header";
 import SideBar from "./SideBar";
-const { Header, Content } = Layout;
+
+const { Content } = Layout;
+
 const MainLayout = () => {
-  const [collapsed, setCollapsed] = useState(false);
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
 
   return (
-    <Layout>
+    <Layout style={{ minHeight: "100vh" }}>
       <SideBar />
       <Layout>
-        <HeaderLayout
-          colorBgContainer={colorBgContainer}
-          setCollapsed={setCollapsed}
-          collapsed={collapsed}
-        />
-
+        <HeaderLayout colorBgContainer={colorBgContainer} />
         <Content
           style={{
-            margin: "24px 16px",
-            padding: 24,
-            minHeight: "100vh",
+            margin: "16px 12px",
+            padding: "16px",
+            minHeight: "calc(100vh - 96px)",
             background: colorBgContainer,
             borderRadius: borderRadiusLG,
           }}
+          className="sm:!m-[24px_16px] sm:!p-6"
         >
           <Outlet />
         </Content>
@@ -36,4 +31,5 @@ const MainLayout = () => {
     </Layout>
   );
 };
+
 export default MainLayout;

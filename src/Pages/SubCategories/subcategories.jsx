@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import DataTable from "../../components/ui/DataTable";
 import { getAllSubCategories } from "../../api/subCategory";
 import { useQuery } from "@tanstack/react-query";
+import { useTranslation } from "react-i18next";
 import AddSubCategory from "./addSubCategory";
 import DeleteSubCategory from "./deleteSubCategory";
 import UpdateSubCategory from "./updateSubCategory";
@@ -53,6 +54,7 @@ const columns = [
 const SubCategories = () => {
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
+  const { t } = useTranslation();
 
   const { data: subCategories, isLoading: isGetSubCategoriesLoading } =
     useQuery({
@@ -65,8 +67,8 @@ const SubCategories = () => {
 
   return (
     <div>
-      <header className="flex justify-between mb-3 items-center flex-wrap gap-2 overflow-x-auto">
-        <h1 className="text-2xl font-semibold">Sub Categories</h1>
+      <header className="flex flex-col sm:flex-row justify-between mb-3 sm:items-center gap-2">
+        <h1 className="text-lg sm:text-2xl font-semibold">{t("pages.subCategories")}</h1>
         <AddSubCategory />
       </header>
       <DataTable

@@ -1,5 +1,6 @@
-import { Modal, Button } from "antd";
+import { Modal } from "antd";
 import React from "react";
+import { useTranslation } from "react-i18next";
 
 const ConfirmModal = ({
   title,
@@ -11,25 +12,21 @@ const ConfirmModal = ({
   handleOpenModal,
   isLoading,
 }) => {
+  const { t } = useTranslation();
+
   return (
     <>
       <div onClick={handleOpenModal} className="cursor-pointer">{IconComponent}</div>
       <Modal
-        title={
-          <>
-            <h1>{title}</h1>
-          </>
-        }
+        title={<h1>{title}</h1>}
         confirmLoading={isLoading}
         open={isModalOpen}
         onOk={onOk}
-        okText="Delete"
+        okText={t("buttons.delete")}
         okType="danger"
-        // loading={isLoading}
-        cancelText="Cancel"
+        cancelText={t("buttons.cancel")}
         onCancel={onCancel}
       >
-        
         <p>{message}</p>
       </Modal>
     </>

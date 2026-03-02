@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import DataTable from "../../components/ui/DataTable";
-import { Button, Tag, Image } from "antd";
+import { Tag, Image } from "antd";
 import { getAllSliders } from "../../api/slider";
 import { useQuery } from "@tanstack/react-query";
+import { useTranslation } from "react-i18next";
 import AddSlider from "./addSlider";
 import DeleteSlider from "./deleteSlider";
 import UpdateSlider from "./updateSlider";
@@ -59,6 +60,7 @@ const columns = [
 const Sliders = () => {
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
+  const { t } = useTranslation();
 
   const { data: sliders, isLoading: isGetSlidersLoading } = useQuery({
     queryKey: ["sliders", page, pageSize],
@@ -70,8 +72,8 @@ const Sliders = () => {
 
   return (
     <div>
-      <header className="flex justify-between mb-3 items-center flex-wrap gap-2 overflow-x-auto">
-        <h1 className="text-2xl font-semibold ">Sliders</h1>
+      <header className="flex flex-col sm:flex-row justify-between mb-3 sm:items-center gap-2">
+        <h1 className="text-lg sm:text-2xl font-semibold">{t("pages.sliders")}</h1>
         <AddSlider />
       </header>
       <DataTable

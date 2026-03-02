@@ -3,42 +3,39 @@ import ConfirmModal from "../../components/ui/ConfirmModal";
 import { TrashIcon } from "lucide-react";
 import toast from "react-hot-toast";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { deleteSubCategory } from "../../api/subCategory";
+import { deleteOrder } from "../../api/orders";
 import { useTranslation } from "react-i18next";
 
-const DeleteSubCategory = ({ record }) => {
+const DeleteOrder = ({ record }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { t } = useTranslation();
 
   const queryClient = useQueryClient();
-  const {
-    mutateAsync: deleteSubCategoryMutation,
-    isPending: isDeleteSubCategoryLoading,
-  } = useMutation({
-    mutationFn: () => deleteSubCategory(record?._id),
+  const { mutateAsync: deleteOrderMutation, isPending: isLoading } = useMutation({
+    mutationFn: () => deleteOrder(record?._id),
     onSuccess: () => {
       setIsModalOpen(false);
-      toast.success(t("toasts.subCategoryDeleted"));
-      queryClient.invalidateQueries({ queryKey: ["subCategories"] });
+      toast.success(t("toasts.orderDeleted"));
+      queryClient.invalidateQueries({ queryKey: ["orders"] });
     },
     onError: () => {
-      toast.error(t("toasts.subCategoryDeleteFailed"));
+      toast.error(t("toasts.orderDeleteFailed"));
     },
   });
 
   return (
     <ConfirmModal
-      title={t("modals.deleteSubCategory")}
-      message={t("modals.confirmDeleteSubCategory")}
-      onOk={() => deleteSubCategoryMutation()}
+      title={t("modals.deleteOrder")}
+      message={t("modals.confirmDeleteOrder")}
+      onOk={() => deleteOrderMutation()}
       onCancel={() => setIsModalOpen(false)}
-      IconComponent={<TrashIcon />}
+      IconComponent={<TrashIcon size={18} />}
       isModalOpen={isModalOpen}
-      isLoading={isDeleteSubCategoryLoading}
+      isLoading={isLoading}
       setIsModalOpen={setIsModalOpen}
       handleOpenModal={() => setIsModalOpen(true)}
     />
   );
 };
 
-export default DeleteSubCategory;
+export default DeleteOrder;

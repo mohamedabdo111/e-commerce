@@ -1,48 +1,41 @@
-import React, { useState } from 'react'
-import ConfirmModal from '../../components/ui/ConfirmModal'
-import { TrashIcon } from 'lucide-react'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { deleteProduct } from '../../api/products'
-import toast from 'react-hot-toast'
-const DeleteProduct = ({ record }   ) => {
+import React, { useState } from "react";
+import ConfirmModal from "../../components/ui/ConfirmModal";
+import { TrashIcon } from "lucide-react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { deleteProduct } from "../../api/products";
+import { useTranslation } from "react-i18next";
+import toast from "react-hot-toast";
+
+const DeleteProduct = ({ record }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const handleCancel = () => {
-    setIsModalOpen(false);
-  };
-  const handleOpenModal = () => {
-    setIsModalOpen(true);
-  };
+  const { t } = useTranslation();
 
   const queryClient = useQueryClient();
   const { mutateAsync: deleteProductMutation, isPending: isDeleteProductLoading } = useMutation({
     mutationFn: () => deleteProduct(record?._id),
     onSuccess: () => {
       setIsModalOpen(false);
-      toast.success("Product deleted successfully");
+      toast.success(t("toasts.productDeleted"));
       queryClient.invalidateQueries({ queryKey: ["products"] });
     },
-    onError: (error) => {
-      toast.error("Failed to delete product");
-      console.log(error);
-    }
+    onError: () => {
+      toast.error(t("toasts.productDeleteFailed"));
+    },
   });
+
   return (
-   <>
-   
-   <ConfirmModal
-        title="Delete Product"
-        message="Are you sure you want to delete this product?"
-        onOk={() => deleteProductMutation()}
-        onCancel={handleCancel}
-        IconComponent={<TrashIcon size={20} />}
-        isModalOpen={isModalOpen}
-        isLoading={isDeleteProductLoading}
-        setIsModalOpen={setIsModalOpen}
-        handleOpenModal={handleOpenModal}
+    <ConfirmModal
+      title={t("modals.deleteProduct")}
+      message={t("modals.confirmDeleteProduct")}
+      onOk={() => deleteProductMutation()}
+      onCancel={() => setIsModalOpen(false)}
+      IconComponent={<TrashIcon size={20} />}
+      isModalOpen={isModalOpen}
+      isLoading={isDeleteProductLoading}
+      setIsModalOpen={setIsModalOpen}
+      handleOpenModal={() => setIsModalOpen(true)}
+    />
+  );
+};
 
-      />
-   </>
-  )
-}
-
-export default DeleteProduct
+export default DeleteProduct;

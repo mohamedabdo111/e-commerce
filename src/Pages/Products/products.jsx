@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import DataTable from "../../components/ui/DataTable";
 import { getAllProducts } from "../../api/products";
 import { useQuery } from "@tanstack/react-query";
+import { useTranslation } from "react-i18next";
 import AddProduct from "./addProduct";
 import DeleteProduct from "./deleteProduct";
 import UpdateProduct from "./updateProduct";
@@ -12,7 +13,6 @@ const columns = [
     title: "Name",
     dataIndex: "name",
     key: "name",
-    // render: text => <a>{text}</a>,
   },
   {
     title: "Description",
@@ -44,19 +44,17 @@ const columns = [
     key: "stock",
   },
   {
-    title: "category",
+    title: "Category",
     dataIndex: "category",
     key: "category",
     render: (text, record) => <div>{record.category.name}</div>,
   },
-
   {
     title: "Sub Category",
     dataIndex: "subCategory",
     key: "subCategory",
     render: (text, record) => <div>{record.subCategory.name}</div>,
   },
-
   {
     title: "Action",
     key: "action",
@@ -72,6 +70,7 @@ const columns = [
 const Products = () => {
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
+  const { t } = useTranslation();
 
   const { data: products, isLoading: isGetProductsLoading } = useQuery({
     queryKey: ["products", page, pageSize],
@@ -83,8 +82,8 @@ const Products = () => {
 
   return (
     <div>
-      <header className="flex justify-between mb-3 items-center flex-wrap gap-2 overflow-x-auto">
-        <h1 className="text-2xl font-semibold ">Products</h1>
+      <header className="flex flex-col sm:flex-row justify-between mb-3 sm:items-center gap-2">
+        <h1 className="text-lg sm:text-2xl font-semibold">{t("pages.products")}</h1>
         <AddProduct />
       </header>
       <DataTable

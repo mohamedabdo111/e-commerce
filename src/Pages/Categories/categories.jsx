@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import DataTable from "../../components/ui/DataTable";
-import { Button, Tag } from "antd";
+import { Tag } from "antd";
 import { getAllCategories } from "../../api/categories";
 import { getSubCategoriesByCategory } from "../../api/subCategory";
 import { useQuery } from "@tanstack/react-query";
+import { useTranslation } from "react-i18next";
 import AddCategory from "./addCategory";
 import DeleteCategory from "./deleteCategory";
 import UpdateCategory from "./updateCategory";
@@ -11,6 +12,7 @@ import AddSubCategory from "../SubCategories/addSubCategory";
 import { Image } from "antd";
 
 const SubCategoriesCell = ({ categoryId }) => {
+  const { t } = useTranslation();
   const { data: subCategories } = useQuery({
     queryKey: ["subCategories", categoryId],
     queryFn: () => getSubCategoriesByCategory(categoryId),
@@ -20,7 +22,7 @@ const SubCategoriesCell = ({ categoryId }) => {
   const subCategoriesList = subCategories?.data || [];
 
   if (subCategoriesList.length === 0) {
-    return <span className="text-gray-400">No subcategories</span>;
+    return <span className="text-gray-400">{t("common.noSubcategories")}</span>;
   }
 
   return (
@@ -32,7 +34,7 @@ const SubCategoriesCell = ({ categoryId }) => {
       ))}
       {subCategoriesList.length > 3 && (
         <Tag color="default" size="small">
-          +{subCategoriesList.length - 3} more
+          +{subCategoriesList.length - 3} {t("common.more")}
         </Tag>
       )}
     </div>
@@ -82,10 +84,9 @@ const columns = [
 ];
 
 const Categories = () => {
-  // const [subCategories, setSubCategories] = useState(1);
-  // const [subCategoriesWithData, setSubCategoriesWithData] = useState([]);
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
+  const { t } = useTranslation();
 
   const { data: categories, isLoading: isGetCategoriesLoading } = useQuery({
     queryKey: ["categories", page, pageSize],
@@ -97,8 +98,8 @@ const Categories = () => {
 
   return (
     <div>
-      <header className="flex justify-between mb-3 items-center flex-wrap gap-2 overflow-x-auto">
-        <h1 className="text-2xl font-semibold ">Categories</h1>
+      <header className="flex flex-col sm:flex-row justify-between mb-3 sm:items-center gap-2">
+        <h1 className="text-lg sm:text-2xl font-semibold">{t("pages.categories")}</h1>
         <div className="flex gap-2 items-center">
           <AddCategory />
           <AddSubCategory />

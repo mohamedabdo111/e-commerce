@@ -12,8 +12,10 @@ const SubCategories = React.lazy(() =>
 );
 const Offers = React.lazy(() => import("./Pages/Offers/offers"));
 const Sliders = React.lazy(() => import("./Pages/Sliders/sliders"));
+const Orders = React.lazy(() => import("./Pages/Orders/orders"));
 const LoginForm = React.lazy(() => import("./auth/login"));
 const Categories = React.lazy(() => import("./Pages/Categories/categories"));
+const Dashboard = React.lazy(() => import("./Pages/Dashboard/dashboard"));
 const MainLayout = React.lazy(() => import("./components/layout/MainLayout"));
 function App() {
   const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
@@ -23,6 +25,10 @@ function App() {
       path: "/",
       element: isLoggedIn ? <MainLayout /> : <Navigate to="/login" replace />,
       children: [
+        {
+          index: true,
+          element: <Dashboard />,
+        },
         {
           path: "/categories",
           element: <Categories />,
@@ -43,10 +49,10 @@ function App() {
           path: "/sliders",
           element: <Sliders />,
         },
-        // {
-        //   path: "/orders",
-        //   element: <Orders />,
-        // },
+        {
+          path: "/orders",
+          element: <Orders />,
+        },
       ],
     },
     {

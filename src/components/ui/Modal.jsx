@@ -1,5 +1,6 @@
 import React from "react";
 import { Button, Modal } from "antd";
+
 const ModalComponent = ({
   title,
   children,
@@ -8,15 +9,9 @@ const ModalComponent = ({
   setIsModalOpen,
   customButton,
 }) => {
-  const showModal = () => {
-    setIsModalOpen(true);
-  };
-  const handleOk = () => {
-    setIsModalOpen(false);
-  };
-  const handleCancel = () => {
-    setIsModalOpen(false);
-  };
+  const showModal = () => setIsModalOpen(true);
+  const handleCancel = () => setIsModalOpen(false);
+
   return (
     <>
       {customButton || (
@@ -26,21 +21,18 @@ const ModalComponent = ({
       )}
       <Modal
         title={title}
-        closable={{ "aria-label": "Custom Close Button" }}
+        closable={{ "aria-label": "Close" }}
         open={isModalOpen}
-        width={800}
-        // height={800}
-        onOk={handleOk}
+        onOk={handleCancel}
         onCancel={handleCancel}
         footer={null}
-        style={{
-          height: "800",
-          width: "800px",
-        }}
+        width="90%"
+        style={{ maxWidth: 800 }}
       >
-        <div className="max-h-[500px] w-full overflow-y-auto">{children}</div>
+        <div className="max-h-[70vh] w-full overflow-y-auto">{children}</div>
       </Modal>
     </>
   );
 };
+
 export default ModalComponent;

@@ -3,6 +3,7 @@ import DataTable from "../../components/ui/DataTable";
 import { Tag } from "antd";
 import { getAllOffers } from "../../api/offers";
 import { useQuery } from "@tanstack/react-query";
+import { useTranslation } from "react-i18next";
 import AddOffer from "./addOffer";
 import DeleteOffer from "./deleteOffer";
 import UpdateOffer from "./updateOffer";
@@ -28,16 +29,13 @@ const columns = [
     title: "Products Price",
     dataIndex: "products",
     key: "products",
-    render: (text ,record ) => <Tag color="blue"> {
-      record?.products?.map((product)=>{
-        return<>
-           <div>
-          {product.retailPrice} EGP
-        </div>
-        </>
-     
-      })
-    }</Tag>,
+    render: (text, record) => (
+      <Tag color="blue">
+        {record?.products?.map((product) => (
+          <div key={product._id}>{product.retailPrice} EGP</div>
+        ))}
+      </Tag>
+    ),
   },
   {
     title: "Start Date",
@@ -51,7 +49,6 @@ const columns = [
     key: "endDate",
     render: (text) => new Date(text).toLocaleDateString(),
   },
-
   {
     title: "Action",
     key: "action",
@@ -67,6 +64,7 @@ const columns = [
 const Offers = () => {
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
+  const { t } = useTranslation();
 
   const { data: offers, isLoading: isGetOffersLoading } = useQuery({
     queryKey: ["offers", page, pageSize],
@@ -78,8 +76,8 @@ const Offers = () => {
 
   return (
     <div>
-      <header className="flex justify-between mb-3 items-center flex-wrap gap-2 overflow-x-auto">
-        <h1 className="text-2xl font-semibold ">Offers</h1>
+      <header className="flex flex-col sm:flex-row justify-between mb-3 sm:items-center gap-2">
+        <h1 className="text-lg sm:text-2xl font-semibold">{t("pages.offers")}</h1>
         <AddOffer />
       </header>
       <DataTable
